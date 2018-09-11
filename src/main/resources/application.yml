@@ -1,0 +1,8 @@
+server:
+  servlet:
+    context-path: /msh
+
+management:
+  endpoints:
+    web:
+      base-path: "/management"
