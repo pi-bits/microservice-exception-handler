@@ -8,5 +8,6 @@ management:
         enabled: false
   endpoints:
     web:
-      base-path: "/management"
-
+      base-path: "/"
+      path-mapping:
+        health: health
