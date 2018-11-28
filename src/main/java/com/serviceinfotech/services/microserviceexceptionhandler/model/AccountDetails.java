@@ -1,6 +1,8 @@
 package com.serviceinfotech.services.microserviceexceptionhandler.model;
 
-public class AccountDetails {
+import java.io.Serializable;
+
+public class AccountDetails implements Serializable {
 
     private String accountHolderName;
     private String accountHolderAddress;
@@ -13,7 +15,8 @@ public class AccountDetails {
         this.phoneNumber = phoneNumber;
     }
 
-
+    public AccountDetails() {
+    }
 
     public String getAccountHolderName() {
         return accountHolderName;
