@@ -1,6 +1,8 @@
 package com.serviceinfotech.services.microserviceexceptionhandler.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.serviceinfotech.services.microserviceexceptionhandler.MicroserviceExceptionHandlerApplication;
+import com.serviceinfotech.services.microserviceexceptionhandler.config.RestClientConfig;
 import com.serviceinfotech.services.microserviceexceptionhandler.exceptions.AccountNumberNotFound;
 import com.serviceinfotech.services.microserviceexceptionhandler.exceptions.InvalidAccountNumber;
 import com.serviceinfotech.services.microserviceexceptionhandler.model.AccountDetails;
@@ -12,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.client.match.MockRestRequestMatchers;
@@ -21,6 +24,7 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @RestClientTest(AccountService.class)
+@ContextConfiguration(classes = MicroserviceExceptionHandlerApplication.class)
 public class AccountServiceTest {
 
     @Autowired
@@ -46,6 +50,8 @@ public class AccountServiceTest {
 
         AccountDetails accountDetails = accountService.getAccountNumber(0);
 
+        this.mockRestServiceServer.verify();
+
         assertThat(accountDetails.getAccountHolderAddress(), Is.is("201 Graton gate"));
         assertThat(accountDetails.getAccountHolderName(), Is.is("Prashant Naik"));
         assertThat(accountDetails.getPhoneNumber(), Is.is(1051811691));
@@ -59,9 +65,13 @@ public class AccountServiceTest {
         this.mockRestServiceServer.expect(MockRestRequestMatchers.requestTo("/application/details/0"))
                 .andRespond(MockRestResponseCreators.withUnauthorizedRequest());
 
-        accountService.getAccountNumber(0);
+        AccountDetails accountDetails = accountService.getAccountNumber(0);
 
+        this.mockRestServiceServer.verify();
 
+        assertThat(accountDetails.getAccountHolderAddress(), Is.is("201 Graton gate"));
+        assertThat(accountDetails.getAccountHolderName(), Is.is("Prashant Naik"));
+        assertThat(accountDetails.getPhoneNumber(), Is.is(1051811691));
     }
 
 

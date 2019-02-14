@@ -1,0 +1,29 @@
+server:
+  servlet:
+    context-path: /msh
+wiremock:
+  server:
+    port : 9999
+management:
+  endpoint:
+    info:
+        enabled: false
+  endpoints:
+    web:
+      base-path: "/"
+      path-mapping:
+        health: health
+logging:
+  level:
+    ROOT: INFO
+app :
+  endpoint: "http://localhost:${wiremock.server.port}/v1/account/"
+  clientId : 345678-56789-456789-456789
+  clients:
+    AGG0001:
+      type : 'INT'
+      code : '12345'
+    AGG0002:
+      type : 'OFI'
+      code : '3456789'
+
