@@ -5,9 +5,7 @@ import com.serviceinfotech.services.microserviceexceptionhandler.service.Account
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.xml.ws.Response;
 
@@ -24,5 +22,10 @@ public class AccountController {
     @GetMapping(value = "/v1/account/{account_number}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccountDetails> getAccount(@PathVariable("account_number") Integer accountNumber){
         return new ResponseEntity<AccountDetails>(accountService.getAccountNumber(accountNumber), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/v1/account/{account_number}",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AccountDetails> getAccount(@PathVariable("account_number") Integer accountNumber, @RequestBody Account account){
+        return new ResponseEntity<AccountDetails>(accountService.save(accountNumber,account), HttpStatus.OK);
     }
 }

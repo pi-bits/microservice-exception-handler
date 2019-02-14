@@ -1,39 +1,30 @@
 package com.serviceinfotech.services.microserviceexceptionhandler.controller;
 
-import com.serviceinfotech.services.microserviceexceptionhandler.exceptions.AccountNumberNotFound;
-import com.serviceinfotech.services.microserviceexceptionhandler.exceptions.InvalidAccountNumber;
-import com.serviceinfotech.services.microserviceexceptionhandler.model.AccountDetails;
-import com.serviceinfotech.services.microserviceexceptionhandler.service.AccountService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.core.Is;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static org.junit.Assert.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
-@AutoConfigureWireMock(port = 9999,stubs = "classpath:/stubs")
+@AutoConfigureWireMock(port = 9999, stubs = "classpath:/stubs")
 @ActiveProfiles("local")
 public class AccountControllerIT {
-    
+
     @Autowired
     MockMvc mockMvc;
 
@@ -46,6 +37,22 @@ public class AccountControllerIT {
                 .andExpect(jsonPath("$.accountHolderAddress", Is.is("201 Graton gate")))
                 .andExpect(jsonPath("$.phoneNumber", Is.is(1051811691)));
     }
+
+    @Test
+    public void shouldSaveAccountDetailsWithStatusOK() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Account value = new Account();
+        value.setAccountNumber("345678");
+
+        mockMvc.perform(post("/v1/account/0")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(value)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accountHolderName", Is.is("Prashant Naik")))
+                .andExpect(jsonPath("$.accountHolderAddress", Is.is("201 Graton gate")))
+                .andExpect(jsonPath("$.phoneNumber", Is.is(1051811691)));
+    }
+
 
     @Test
     public void shouldReturnErrorReponseWithStatus400() throws Exception {

@@ -1,0 +1,28 @@
+{
+  "request": {
+    "urlPath": "/v1/account/0",
+    "method": "POST",
+    "headers": {
+      "Content-Type": {
+        "equalTo": "application/json;charset=UTF-8",
+        "caseInsensitive": true
+      }
+    },
+    "bodyPatterns" : [ {
+      "equalToJson": {
+        "accountNumber": "345678"
+      }
+    }]
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "accountHolderName": "Prashant Naik",
+      "accountHolderAddress":"201 Graton gate",
+      "phoneNumber":1051811691
+    }
+  }
+}

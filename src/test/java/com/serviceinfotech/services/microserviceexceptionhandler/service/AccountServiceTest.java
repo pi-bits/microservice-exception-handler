@@ -3,6 +3,7 @@ package com.serviceinfotech.services.microserviceexceptionhandler.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serviceinfotech.services.microserviceexceptionhandler.MicroserviceExceptionHandlerApplication;
 import com.serviceinfotech.services.microserviceexceptionhandler.config.RestClientConfig;
+import com.serviceinfotech.services.microserviceexceptionhandler.controller.Account;
 import com.serviceinfotech.services.microserviceexceptionhandler.exceptions.AccountNumberNotFound;
 import com.serviceinfotech.services.microserviceexceptionhandler.exceptions.InvalidAccountNumber;
 import com.serviceinfotech.services.microserviceexceptionhandler.model.AccountDetails;
@@ -49,6 +50,26 @@ public class AccountServiceTest {
                 .andRespond(MockRestResponseCreators.withSuccess(detailsString, MediaType.APPLICATION_JSON));
 
         AccountDetails accountDetails = accountService.getAccountNumber(0);
+
+        this.mockRestServiceServer.verify();
+
+        assertThat(accountDetails.getAccountHolderAddress(), Is.is("201 Graton gate"));
+        assertThat(accountDetails.getAccountHolderName(), Is.is("Prashant Naik"));
+        assertThat(accountDetails.getPhoneNumber(), Is.is(1051811691));
+    }
+
+    @Test
+    public void shouldPostAccountDetails() throws Exception {
+
+        String detailsString =
+                objectMapper.writeValueAsString(new AccountDetails("Prashant Naik", "201 Graton gate", 07654257553));
+
+        this.mockRestServiceServer.expect(MockRestRequestMatchers.requestTo("/application/details/0"))
+                .andRespond(MockRestResponseCreators.withSuccess(detailsString, MediaType.APPLICATION_JSON));
+
+        Account account = new Account();
+        account.setAccountNumber("0");
+        AccountDetails accountDetails = accountService.save(0, account);
 
         this.mockRestServiceServer.verify();
 

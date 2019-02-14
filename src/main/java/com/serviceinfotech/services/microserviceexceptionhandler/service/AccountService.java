@@ -1,6 +1,7 @@
 package com.serviceinfotech.services.microserviceexceptionhandler.service;
 
 import com.serviceinfotech.services.microserviceexceptionhandler.config.ApplicationConfig;
+import com.serviceinfotech.services.microserviceexceptionhandler.controller.Account;
 import com.serviceinfotech.services.microserviceexceptionhandler.exceptions.AccountNumberNotFound;
 import com.serviceinfotech.services.microserviceexceptionhandler.exceptions.InvalidAccountNumber;
 import com.serviceinfotech.services.microserviceexceptionhandler.model.AccountDetails;
@@ -14,7 +15,7 @@ import java.util.List;
 @Service
 public class AccountService {
 
-    private  RestTemplate restTemplate;
+    private RestTemplate restTemplate;
     private ApplicationConfig applicationConfig;
 
     private List<AccountDetails> listOfAccounts = Arrays.asList(
@@ -43,5 +44,18 @@ public class AccountService {
 
     private Boolean isValidAccountNumber(Integer accountNumber) {
         return accountNumber < 0;
+    }
+
+    public AccountDetails save(Integer accountNumber, Account account) {
+        if (isValidAccountNumber(accountNumber)) {
+            throw new InvalidAccountNumber(accountNumber);
+        }
+
+        try {
+            ResponseEntity<AccountDetails> forEntity = restTemplate.postForEntity(applicationConfig.getEndpoint() + accountNumber, account, AccountDetails.class);
+            return forEntity.getBody();
+        } catch (Exception ex) {
+            throw new AccountNumberNotFound(accountNumber);
+        }
     }
 }
