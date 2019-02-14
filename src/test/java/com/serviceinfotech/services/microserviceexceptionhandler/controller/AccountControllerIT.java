@@ -37,8 +37,6 @@ public class AccountControllerIT {
     @Autowired
     MockMvc mockMvc;
 
-   @Autowired
-    AccountService accountService;
 
     @Test
     public void shouldReturnAccountDetailsWithStatusOK() throws Exception {
