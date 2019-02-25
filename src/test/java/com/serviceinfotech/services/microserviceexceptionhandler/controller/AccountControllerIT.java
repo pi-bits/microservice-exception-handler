@@ -1,24 +1,22 @@
 package com.serviceinfotech.services.microserviceexceptionhandler.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hamcrest.core.Is;
+import com.jayway.restassured.RestAssured;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static com.jayway.restassured.RestAssured.baseURI;
+import static com.jayway.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.equalTo;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @AutoConfigureWireMock(port = 9999, stubs = "classpath:/stubs")
@@ -29,47 +27,80 @@ public class AccountControllerIT {
     MockMvc mockMvc;
 
 
+    @BeforeClass
+    public static void setup() {
+        String port = System.getProperty("server.port");
+        if (port == null) {
+            RestAssured.port = Integer.valueOf(8080);
+        } else {
+            RestAssured.port = Integer.valueOf(port);
+        }
+
+        String basePath = System.getProperty("server.base");
+        if (basePath == null) {
+            basePath = "/msh/";
+        }
+        RestAssured.basePath = basePath;
+
+        String baseHost = System.getProperty("server.host");
+        if (baseHost == null) {
+            baseHost = "http://localhost";
+        }
+        baseURI = baseHost;
+
+    }
+
     @Test
     public void shouldReturnAccountDetailsWithStatusOK() throws Exception {
-        mockMvc.perform(get("/v1/account/0"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.accountHolderName", Is.is("Prashant Naik")))
-                .andExpect(jsonPath("$.accountHolderAddress", Is.is("201 Graton gate")))
-                .andExpect(jsonPath("$.phoneNumber", Is.is(1051811691)));
+
+        given().when().get("/v1/account/0")
+                .then()
+                .statusCode(200)
+                .body("accountHolderName", equalTo("Prashant Naik"))
+                .body("accountHolderAddress", equalTo("201 Graton gate"))
+                .body("phoneNumber", equalTo(1051811691));
+
     }
 
     @Test
     public void shouldSaveAccountDetailsWithStatusOK() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
-        Account value = new Account();
-        value.setAccountNumber("345678");
+        Account account = new Account();
+        account.setAccountNumber("345678");
 
-        mockMvc.perform(post("/v1/account/0")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(value)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.accountHolderName", Is.is("Prashant Naik")))
-                .andExpect(jsonPath("$.accountHolderAddress", Is.is("201 Graton gate")))
-                .andExpect(jsonPath("$.phoneNumber", Is.is(1051811691)));
+        given().contentType("application/json")
+                .body(account)
+                .when()
+                .post("/v1/account/0")
+                .then()
+                .statusCode(200)
+                .body("accountHolderName", equalTo("Prashant Naik"))
+                .body("accountHolderAddress", equalTo("201 Graton gate"))
+                .body("phoneNumber", equalTo(1051811691));
     }
 
 
     @Test
     public void shouldReturnErrorReponseWithStatus400() throws Exception {
 
-        mockMvc.perform(get("/v1/account/-3454"))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorCode", Is.is(400)))
-                .andExpect(jsonPath("$.errorMessage", Is.is("Account number -3454 is Invalid")));
-
+        given()
+                .when()
+                .get("/v1/account/-3454")
+                .then()
+                .statusCode(400)
+                .body("errorCode", equalTo(400))
+                .body("errorMessage", equalTo("Account number -3454 is Invalid"));
     }
 
     @Test
     public void shouldReturnErrorReponseWithStatus500() throws Exception {
-        mockMvc.perform(get("/v1/account/300"))
-                .andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.errorCode", Is.is(500)))
-                .andExpect(jsonPath("$.errorMessage", Is.is("error fetching account details for account number : 300, please contact service desk")));
+
+        given()
+                .when()
+                .get("/v1/account/300")
+                .then()
+                .statusCode(500)
+                .body("errorCode", equalTo(500))
+                .body("errorMessage", equalTo("error fetching account details for account number : 300, please contact service desk"));
 
     }
 }

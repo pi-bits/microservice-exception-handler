@@ -13,7 +13,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertThat;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @RunWith(SpringRunner.class)
 @ActiveProfiles("local")
 public class NestedConfigTest {
