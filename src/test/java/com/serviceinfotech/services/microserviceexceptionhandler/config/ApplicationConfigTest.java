@@ -24,6 +24,13 @@ public class ApplicationConfigTest {
 
     @Test
     public void contextLoads() throws Exception {
-        assertThat(applicationConfig.getEndpoint(), Is.is("http://localhost:9999/application/details/"));
+        assertThat(applicationConfig.getEndpoint(), Is.is("http://localhost:9999/v1/account/"));
     }
+
+    @Test
+    public void shouldGitCommitInfo() throws Exception {
+        assertThat(applicationConfig.getEndpoint(), Is.is("http://localhost:9999/v1/account/"));
+    }
+
+
 }

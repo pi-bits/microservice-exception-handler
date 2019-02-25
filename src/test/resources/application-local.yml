@@ -1,13 +1,14 @@
 server:
   servlet:
     context-path: /msh
+
 wiremock:
   server:
     port : 9999
 management:
   endpoint:
     info:
-        enabled: false
+        enabled: true
   endpoints:
     web:
       base-path: "/"
