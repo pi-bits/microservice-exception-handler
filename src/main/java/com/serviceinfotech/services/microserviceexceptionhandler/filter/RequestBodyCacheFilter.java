@@ -1,22 +1,22 @@
 package com.serviceinfotech.services.microserviceexceptionhandler.filter;
 
 
+import org.springframework.web.filter.OncePerRequestFilter;
+
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-public class RequestBodyCacheFilter implements Filter {
-
-    public void init(FilterConfig filterConfig) throws ServletException {
-
-    }
+public class RequestBodyCacheFilter extends OncePerRequestFilter {
 
     public static final List<String> WRAP_VERBS = Arrays.asList("PUT", "POST", "PATCH", "DELETE");
 
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         try {
 
             if (wrapRequest((HttpServletRequest) request)) {
@@ -36,10 +36,6 @@ public class RequestBodyCacheFilter implements Filter {
 
             RequestBodyThreadLocal.clear();
         }
-    }
-
-    public void destroy() {
-
     }
 
     /**
