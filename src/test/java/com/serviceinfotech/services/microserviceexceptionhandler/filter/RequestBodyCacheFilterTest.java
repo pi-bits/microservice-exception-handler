@@ -44,9 +44,9 @@ public class RequestBodyCacheFilterTest {
         requestBodyCacheFilter.doFilterInternal(servletRequest, servletResponse, filterChain);
 
         Mockito.verify(filterChain).doFilter((HttpServletRequest) argumentCaptor.capture(), ArgumentMatchers.any(HttpServletResponse.class));
-        DefaultRequestBodyWrapper defaultRequestBodyWrapper = (DefaultRequestBodyWrapper) argumentCaptor.getValue();
-        Assert.assertTrue(argumentCaptor.getValue() instanceof DefaultRequestBodyWrapper);
-        Assert.assertThat(defaultRequestBodyWrapper.getRequestBody(), Is.is("hdfhdfhdfhd"));
+        RequestWrapper requestWrapper = (RequestWrapper) argumentCaptor.getValue();
+        Assert.assertTrue(argumentCaptor.getValue() instanceof RequestWrapper);
+        Assert.assertThat(requestWrapper.getRequestBody(), Is.is("hdfhdfhdfhd"));
     }
 
     @Test
@@ -54,7 +54,7 @@ public class RequestBodyCacheFilterTest {
         Mockito.when(servletRequest.getMethod()).thenReturn("GET");
         requestBodyCacheFilter.doFilterInternal(servletRequest, servletResponse, filterChain);
         Mockito.verify(filterChain).doFilter((HttpServletRequest) argumentCaptor.capture(), ArgumentMatchers.any(HttpServletResponse.class));
-        Assert.assertFalse(argumentCaptor.getValue() instanceof DefaultRequestBodyWrapper);
+        Assert.assertFalse(argumentCaptor.getValue() instanceof RequestWrapper);
     }
 
 }

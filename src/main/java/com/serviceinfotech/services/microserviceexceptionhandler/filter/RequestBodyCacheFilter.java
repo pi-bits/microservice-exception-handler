@@ -3,7 +3,8 @@ package com.serviceinfotech.services.microserviceexceptionhandler.filter;
 
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.*;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -12,7 +13,7 @@ import java.util.List;
 
 public class RequestBodyCacheFilter extends OncePerRequestFilter {
 
-    public static final List<String> WRAP_VERBS = Arrays.asList("PUT", "POST", "PATCH", "DELETE");
+    public static final List<String> VERBS = Arrays.asList("PUT", "POST", "PATCH", "DELETE");
 
 
     @Override
@@ -38,26 +39,11 @@ public class RequestBodyCacheFilter extends OncePerRequestFilter {
         }
     }
 
-    /**
-     * This implementation returns an instance of {@link DefaultRequestBodyWrapper}
-     * You may wish to override this with your own specific implementation.
-     *
-     * @param request to wrap
-     * @return RequestBodyWrapper
-     * @throws IOException
-     */
     protected RequestBodyWrapper getInstance(HttpServletRequest request) throws IOException {
-        return new DefaultRequestBodyWrapper(request);
+        return new RequestWrapper(request);
     }
 
-    /**
-     * Defaults to wrapping PUT/POST/PATCH/DELETE requests
-     *
-     * @param request original request
-     * @return flag, true means that the request should be wrapped
-     */
     protected boolean wrapRequest(HttpServletRequest request) {
-
-        return WRAP_VERBS.contains(request.getMethod());
+        return VERBS.contains(request.getMethod());
     }
 }

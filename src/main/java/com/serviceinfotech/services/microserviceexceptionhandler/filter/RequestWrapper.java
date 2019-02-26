@@ -7,15 +7,14 @@ import java.io.*;
 
 import static java.util.stream.Collectors.joining;
 
-public class DefaultRequestBodyWrapper extends RequestBodyWrapper  {
+public class RequestWrapper extends RequestBodyWrapper {
 
     private String requestBody;
 
-    private ServletInputStream sis;
+    private ServletInputStream servletInputStream;
 
 
-    public DefaultRequestBodyWrapper(HttpServletRequest request) throws IOException {
-
+    public RequestWrapper(HttpServletRequest request) throws IOException {
         super(request);
         requestBody = readBodyFromRequest(request);
     }
@@ -27,7 +26,7 @@ public class DefaultRequestBodyWrapper extends RequestBodyWrapper  {
         try {
 
             InputStream inputStream = request.getInputStream();
-            sis = (ServletInputStream) inputStream;
+            servletInputStream = (ServletInputStream) inputStream;
 
             if (inputStream != null) {
                 bufferedReader = new BufferedReader(new InputStreamReader(inputStream, request.getCharacterEncoding()));
@@ -52,12 +51,12 @@ public class DefaultRequestBodyWrapper extends RequestBodyWrapper  {
 
             @Override
             public boolean isFinished() {
-                return sis.isFinished();
+                return RequestWrapper.this.servletInputStream.isFinished();
             }
 
             @Override
             public boolean isReady() {
-                return sis.isReady();
+                return RequestWrapper.this.servletInputStream.isReady();
             }
 
             @Override
