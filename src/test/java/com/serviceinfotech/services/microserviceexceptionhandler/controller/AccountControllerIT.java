@@ -1,5 +1,6 @@
 package com.serviceinfotech.services.microserviceexceptionhandler.controller;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
 import com.jayway.restassured.RestAssured;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -52,7 +53,6 @@ public class AccountControllerIT {
 
     @Test
     public void shouldReturnAccountDetailsWithStatusOK() throws Exception {
-
         given().when().get("/v1/account/0")
                 .then()
                 .statusCode(200)
