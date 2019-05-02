@@ -4,27 +4,32 @@ server:
 
 wiremock:
   server:
-    port : 9999
+    port: 9999
 management:
   endpoint:
     info:
-        enabled: true
+      enabled: true
+    health:
+      enabled: false
   endpoints:
     web:
       base-path: "/"
-      path-mapping:
-        health: health
+      exposure:
+        include: health
+#      path-mapping:
+#        dbHealth: health
+
 logging:
   level:
-    ROOT: INFO
-app :
+    org.springframework.boot.actuate: TRACE
+app:
   endpoint: "http://localhost:${wiremock.server.port}/v1/account/"
-  clientId : 345678-56789-456789-456789
+  clientId: 345678-56789-456789-456789
   clients:
     AGG0001:
-      type : 'INT'
-      code : '12345'
+      type: 'INT'
+      code: '12345'
     AGG0002:
-      type : 'OFI'
-      code : '3456789'
+      type: 'OFI'
+      code: '3456789'
 
