@@ -1,54 +1,46 @@
 package com.serviceinfotech.services.microserviceexceptionhandler.utils;
 
 import org.hamcrest.core.Is;
-import org.junit.Before;
+import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.validation.ClockProvider;
 import java.time.Clock;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.Period;
+import java.util.Arrays;
+import java.util.List;
 
-import static org.junit.Assert.assertThat;
-
-@SpringBootTest
-@RunWith(SpringRunner.class)
-@ActiveProfiles("local")
 public class DateUtilsTest {
 
-    @Autowired
-    private DateUtils dateUtils;
-
-    @MockBean
-    private ClockProvider clockProvider;
-
-
-    @Before
-    public void setUp() throws Exception {
+    @Test
+    public void shouldCalculateMaxDate() {
+        DateUtils dateUtils = new DateUtils(() -> Clock.systemDefaultZone());
+        List<LocalDate> localDates = Arrays.asList(
+                LocalDate.of(2015, 1, 1),
+                LocalDate.of(2016, 2, 1),
+                LocalDate.of(2017, 5, 1),
+                LocalDate.of(2018, 7, 1),
+                LocalDate.of(2019, 9, 1),
+                LocalDate.of(2014, 10, 1),
+                LocalDate.of(2013, 2, 1),
+                LocalDate.of(2015, 1, 1),
+                LocalDate.of(2012, 8, 1),
+                LocalDate.of(2011, 9, 1),
+                LocalDate.of(2009, 4, 1),
+                LocalDate.of(2008, 2, 1)
+        );
+        LocalDate maxDate = dateUtils.calculateMaxDate(localDates);
+        Assert.assertThat(maxDate.getYear(), Is.is(2019));
+        Assert.assertThat(maxDate.getMonthValue(), Is.is(9));
+        Assert.assertThat(maxDate.getDayOfMonth(), Is.is(1));
     }
 
     @Test
-    public void shouldCalculateRemainingYears_withFixedClock() {
-        String instantExpected = "2017-12-22T10:15:30Z";
-        Clock clock = Clock.fixed(Instant.parse(instantExpected), ZoneId.of("Europe/London"));
-        Mockito.when(clockProvider.getClock()).thenReturn(clock);
-        assertThat(dateUtils.calculateNumberOfYears(LocalDate.of(2025, 12, 1)), Is.is(7l));
-
-    }
-
-    @Test
-    public void shouldCalculateRemainingYears_withSystemClock() {
-        Clock clock = Clock.systemDefaultZone();
-        Mockito.when(clockProvider.getClock()).thenReturn(clock);
-        assertThat(dateUtils.calculateNumberOfYears(LocalDate.of(2025, 12, 1)), Is.is(6l));
-
+    public void shouldGetAgeAsOfToday() {
+        DateUtils dateUtils = new DateUtils(() -> Clock.systemDefaultZone());
+        Period age = dateUtils.calculateAge( LocalDate.of(1982, 11, 2));
+        Assert.assertThat(age.getYears(), Is.is(36));
+        Assert.assertThat(age.getMonths(), Is.is(7));
+        Assert.assertThat(age.getDays(), Is.is(1   ));
     }
 }

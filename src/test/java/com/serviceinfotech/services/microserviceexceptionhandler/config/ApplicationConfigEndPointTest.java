@@ -46,7 +46,7 @@ public class ApplicationConfigEndPointTest {
                 .when()
                 .get("http://localhost:8080/msh/health")
                 .then().assertThat().statusCode(200).content(Is.is("hello health"));
-        Mockito.verify(healthIndicator).hello();
+        Mockito.verify(healthIndicator).health();
 
     }
 
