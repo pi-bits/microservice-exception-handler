@@ -1,5 +1,5 @@
 <configuration>
-    <appender name="jsonConsoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
             <providers>
                 <timestamp>
@@ -25,6 +25,6 @@
         </encoder>
     </appender>
     <root level="INFO">
-        <appender-ref ref="jsonConsoleAppender"/>
+        <appender-ref ref="consoleAppender"/>
     </root>
 </configuration>
