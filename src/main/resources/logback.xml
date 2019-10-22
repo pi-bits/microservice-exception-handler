@@ -1,22 +1,23 @@
 <configuration>
     <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <!--<filter class="com.serviceinfotech.services.microserviceexceptionhandler.loggers.SampleFilter" />-->
+
         <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
             <providers>
                 <timestamp>
                     <timeZone>Europe/London</timeZone>
+                    <fieldName>timestamp</fieldName>
                 </timestamp>
-
+                <mdc/>
                 <version/>
-                <pattern>
+                <pattern >
                     <omitEmptyFields>true</omitEmptyFields>
                     <pattern>
                         {
                         "logger": "%logger",
                         "level": "%level",
                         "thread": "%thread",
-                        "message": "%message",
-                        "traceId": "%mdc{traceId}",
-                        "spanId": "%mdc{spanId}"
+                        "message": "%message"
                         }
                     </pattern>
                 </pattern>

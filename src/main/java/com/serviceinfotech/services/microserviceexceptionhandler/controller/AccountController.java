@@ -28,6 +28,11 @@ public class AccountController {
     }
 
 
+    @PostMapping(value = "/mortgages/{id}/application",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ApplicationData> getApplicationData(@PathVariable("id") Integer accountNumber,@RequestBody ApplicationData applicationData){
+        return new ResponseEntity<ApplicationData>(applicationData, HttpStatus.OK);
+    }
+
     @GetMapping(value = "/v1/account/{account_number}",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccountDetails> getAccount(@PathVariable("account_number") Integer accountNumber){
         return new ResponseEntity<AccountDetails>(accountService.getAccountNumber(accountNumber), HttpStatus.OK);
@@ -47,7 +52,7 @@ public class AccountController {
     @RequestMapping("/callhome")
     public String callHome() {
         LOG.info( "calling home");
-        return restTemplate.getForObject("http://localhost:8080", String.class);
+        return restTemplate.getForObject("http://localhost:8081", String.class);
     }
 
 }

@@ -77,6 +77,23 @@ public class AccountControllerIT {
                 .body("accountHolderAddress", equalTo("201 Graton gate"))
                 .body("phoneNumber", equalTo(1051811691));
     }
+    @Test
+    public void shouldSaveApplicationDataWithStatusOK() throws Exception {
+        ApplicationData applicationData = new ApplicationData();
+        applicationData.setAreApplicantSame("YES");
+        applicationData.setCustomerEligiblieFor5YearsFixed("NO");
+
+        given().contentType("application/json")
+                .body(applicationData)
+                .when()
+                .post("/mortgages/1/application")
+                .then()
+                .statusCode(200)
+                .body("areApplicantSame", equalTo("YES"))
+                .body("customerEligiblieFor5YearsFixed", equalTo("NO"));
+    }
+
+
 
 
     @Test

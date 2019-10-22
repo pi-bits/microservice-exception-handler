@@ -24,6 +24,7 @@
         <java.version>1.8</java.version>
         <spring-cloud.version>Greenwich.SR1</spring-cloud.version>
             <ch.qos.logback.version>1.2.3</ch.qos.logback.version>
+        <jackson-core.version>2.9.9</jackson-core.version>
     </properties>
 
     <dependencyManagement>
@@ -55,6 +56,18 @@
 
 
     <dependencies>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson-core.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.joschi.jackson</groupId>
+            <artifactId>jackson-datatype-threetenbp</artifactId>
+            <version>2.8.4</version>
+        </dependency>
+
         <dependency>
             <groupId>com.jayway.restassured</groupId>
             <artifactId>rest-assured</artifactId>
@@ -98,8 +111,16 @@
             <version>6.1</version>
         </dependency>
 
-
-
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-codegen-maven-plugin</artifactId>
+            <version>2.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.6</version>
+        </dependency>
 
     </dependencies>
 
@@ -114,6 +135,54 @@
                 <artifactId>git-commit-id-plugin</artifactId>
                 <version>2.2.6</version>
             </plugin>
+            <!--<plugin>-->
+                <!--<groupId>io.swagger</groupId>-->
+                <!--<artifactId>swagger-codegen-maven-plugin</artifactId>-->
+                <!--<version>3.0.0-rc1</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<goals>-->
+                            <!--<goal>generate</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<inputSpec>${project.basedir}/src/main/resources/api.yaml</inputSpec>-->
+                            <!--<language>java</language>-->
+                            <!--<output>${project.build.directory}/generated-sources</output>-->
+                            <!--<apiPackage>com.uk.serviceinfotech.handler</apiPackage>-->
+                            <!--<modelPackage>com.uk.serviceinfotech.model</modelPackage>-->
+                            <!--<invokerPackage>com.uk.serviceinfotech.handler</invokerPackage>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>3.3.4</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/api.yaml</inputSpec>
+                            <generatorName>java</generatorName>
+                            <generateApis>false</generateApis>
+                            <generateApiDocumentation>false</generateApiDocumentation>
+                            <generateApiTests>false</generateApiTests>
+                            <generateSupportingFiles>false</generateSupportingFiles>
+                            <generateModelDocumentation>false</generateModelDocumentation>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- https://mvnrepository.com/artifact/io.swagger/swagger-codegen-maven-plugin -->
+            <!--<plugin>-->
+                <!--<groupId>io.swagger</groupId>-->
+                <!--<artifactId>swagger-codegen-maven-plugin</artifactId>-->
+                <!--<version>2.4.6</version>-->
+            <!--</plugin>-->
+
         </plugins>
     </build>
 

@@ -15,9 +15,9 @@ public class MaintenanceInterceptor implements HandlerInterceptor {
         ServletInputStream inputStream = request.getInputStream();
         System.out.println(
         IOUtils.toString(inputStream));
-        if (request.getMethod().equalsIgnoreCase(HttpMethod.POST.toString())) {
-            System.out.println("£££££");
-        }
+//        if (request.getMethod().equalsIgnoreCase(HttpMethod.POST.toString())) {
+//            System.out.println("£££££");
+//        }
 
         return true;
 

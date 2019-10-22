@@ -21,7 +21,7 @@ management:
 
 logging:
   level:
-    org.springframework.boot.actuate: TRACE
+    org.springframework.boot.actuate: INFO
 app:
   endpoint: "http://localhost:${wiremock.server.port}/v1/account/"
   clientId: 345678-56789-456789-456789
